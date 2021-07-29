@@ -1,1 +1,1 @@
-# subsampling.github.io
+# https://ying-ju.github.io/subsampling.github.io/
