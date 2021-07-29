@@ -80,7 +80,7 @@ mainfunction <- function(i, dataset, cases){
   # * Required Packages and Custom Functions --------------------------------
   
   # * * Packages ------------------------------------------------------------
-  pacman::p_load(tidyverse, magrittr, janitor,
+  pacman::p_load(tidyverse, magrittr, janitor, DMwR,
                  caret, caretEnsemble, recipes, yardstick,
                  rpart, glmnet, nnet, PRROC, conflicted)
   
@@ -215,9 +215,10 @@ allinone <- function(i, datasets, testdata, cases, IR, method, index=0){
   
   # * * Packages ------------------------------------------------------------
   # remotes::install_github("cran/DMwR")
-  pacman::p_load(tidyverse, magrittr, janitor, 
+  pacman::p_load(tidyverse, magrittr, janitor, DMwR,
                  caret, caretEnsemble, recipes, yardstick,
                  rpart, glmnet, nnet, PRROC, conflicted)
+  
   
   
   # * Data Preprocessing ----------------------------------------------------
@@ -313,9 +314,10 @@ modeling <- function(trainData, testData, response, subsampling, best_metric, me
   # Required Packages and Custom Functions 
   # if DMwR is not available, use the following line to install it.
   # remotes::install_github("cran/DMwR")
-  pacman::p_load(tidyverse, magrittr, janitor, 
-                 caret, recipes, yardstick,
+  pacman::p_load(tidyverse, magrittr, janitor, DMwR,
+                 caret, caretEnsemble, recipes, yardstick,
                  rpart, glmnet, nnet, PRROC, conflicted)
+  
   
   if (!(method %in% c("glm", "rpart"))) return("Error: This algorithm only works with 'glm' or 'rpart'.")
   if (!(subsampling %in% c("NULL", "down", "up", "smote"))) return("Error: This algorithm only works with subsampling strategies: 'NULL', 'down', 'up', 'smote'.")
