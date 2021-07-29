@@ -80,6 +80,8 @@ mainfunction <- function(i, dataset, cases){
   # * Required Packages and Custom Functions --------------------------------
   
   # * * Packages ------------------------------------------------------------
+  if(require(remotes)==FALSE) install.packages("remotes")
+  if(require(DMwR)==FALSE) remotes::install_github("cran/DMwR")
   pacman::p_load(tidyverse, magrittr, janitor, DMwR,
                  caret, caretEnsemble, recipes, yardstick,
                  rpart, glmnet, nnet, PRROC, conflicted)
@@ -214,7 +216,8 @@ allinone <- function(i, datasets, testdata, cases, IR, method, index=0){
   # * Required Packages and Custom Functions --------------------------------
   
   # * * Packages ------------------------------------------------------------
-  # remotes::install_github("cran/DMwR")
+  if(require(remotes)==FALSE) install.packages("remotes")
+  if(require(DMwR)==FALSE) remotes::install_github("cran/DMwR")
   pacman::p_load(tidyverse, magrittr, janitor, DMwR,
                  caret, caretEnsemble, recipes, yardstick,
                  rpart, glmnet, nnet, PRROC, conflicted)
@@ -312,8 +315,8 @@ modeling <- function(trainData, testData, response, subsampling, best_metric, me
   if (subsampling=="NULL") subsampling <- NULL
   
   # Required Packages and Custom Functions 
-  # if DMwR is not available, use the following line to install it.
-  # remotes::install_github("cran/DMwR")
+  if(require(remotes)==FALSE) install.packages("remotes")
+  if(require(DMwR)==FALSE) remotes::install_github("cran/DMwR")
   pacman::p_load(tidyverse, magrittr, janitor, DMwR,
                  caret, caretEnsemble, recipes, yardstick,
                  rpart, glmnet, nnet, PRROC, conflicted)
