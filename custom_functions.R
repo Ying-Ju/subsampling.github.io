@@ -428,6 +428,6 @@ modeling <- function(trainData, testData, response, subsampling, best_metric, me
                              Precision = Precision$.estimate, F1 = F1$.estimate,
                              AUPRC = AUPRC$.estimate)
   
-  if (index==1) return(final_result)
+  if (index==0) return(final_result)
   if (index==2) return(list(Performance=final_result, Prediction=result))
 }
