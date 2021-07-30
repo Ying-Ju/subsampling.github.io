@@ -209,8 +209,6 @@ allinone <- function(i, datasets, testdata, cases, IR, method, index=0){
   
   if (!(method %in% c("glm", "rpart"))) return("Error: This algorithm only works with 'glm' or 'rpart'.")
   if (!(subsampling %in% c("NULL", "down", "up", "smote"))) return("Error: This algorithm only works with subsampling strategies: 'NULL', 'down', 'up', 'smote'.")
-  
-  
   if (subsampling=="NULL") subsampling <- NULL
   
   # * Required Packages and Custom Functions --------------------------------
@@ -312,7 +310,6 @@ allinone <- function(i, datasets, testdata, cases, IR, method, index=0){
 # seed: random seed 
 
 modeling <- function(trainData, testData, response, subsampling, best_metric, method, index=0, seed=2021){
-  if (subsampling=="NULL") subsampling <- NULL
   
   # Required Packages and Custom Functions 
   if(require(remotes)==FALSE) install.packages("remotes")
@@ -324,7 +321,8 @@ modeling <- function(trainData, testData, response, subsampling, best_metric, me
   
   if (!(method %in% c("glm", "rpart"))) return("Error: This algorithm only works with 'glm' or 'rpart'.")
   if (!(subsampling %in% c("NULL", "down", "up", "smote"))) return("Error: This algorithm only works with subsampling strategies: 'NULL', 'down', 'up', 'smote'.")
-
+  if (subsampling=="NULL") subsampling <- NULL
+  
   # custom function to obtain the area under the precision-recall curve
   prSummary0 <- function (data, lev = NULL, model = NULL) {
     caret:::requireNamespaceQuietStop("yardstick")
@@ -368,7 +366,7 @@ modeling <- function(trainData, testData, response, subsampling, best_metric, me
   
   set.seed <- seed
   seeds <- vector(mode = "list", length = 5)
-  for(j in 1:5) seeds[[j]] <- sample.int(nrow(trainData), 100)
+  for(j in 1:5) seeds[[j]] <- sample.int(nrow(trainData), 10)
   
   ## For the last model:
   seeds[[6]] <- sample.int(nrow(trainData), 1)
