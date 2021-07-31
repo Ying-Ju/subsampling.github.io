@@ -279,9 +279,9 @@ allinone <- function(i, datasets, testdata, cases, IR, method, index=0){
   
   if (index==1) return(result)
   
-  out1 <- defaultSummary(result, lev=levels(trainData$class))
-  out2 <- twoClassSummary(result, lev=levels(trainData$class))
-  out3 <- prSummary(result, lev=levels(trainData$class))
+  out1 <- defaultSummary(result, lev=levels(trainData$State))
+  out2 <- twoClassSummary(result, lev=levels(trainData$State))
+  out3 <- prSummary(result, lev=levels(trainData$State))
   
   
   final_result <- data.frame(cases[i,1:2], IR = IR[cases$ID[i]], 
