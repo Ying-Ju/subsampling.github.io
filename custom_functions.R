@@ -284,7 +284,8 @@ allinone <- function(i, datasets, testdata, cases, IR, method, index=0){
   out3 <- prSummary(result, lev=levels(trainData$class))
   
   
-  final_result <- data.frame(Accuracy = unname(out1["Accuracy"]),
+  final_result <- data.frame(cases[i,1:2], IR = IR[cases$ID[i]], 
+                             Accuracy = unname(out1["Accuracy"]),
                              Sensitivity = unname(out2["Sens"]),
                              Specificity = unname(out2["Spec"]),  
                              AUROC = unname(out2["ROC"]), 
