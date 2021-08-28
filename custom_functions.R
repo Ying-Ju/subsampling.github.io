@@ -203,7 +203,8 @@ mainfunction <- function(i, dataset, cases){
 # This is our custom function for a list of datasets and a test dataset. 
 
 allinone <- function(i, datasets, testdata, cases, IR, method, index=0){
-  trainData = datasets[[cases$ID[i]]]
+  testdata0 <- testdata[[cases$ID[i]]]
+  trainData = datasets[[cases$ID[i]]][[cases$iteration[i]]]
   best_metric <- cases$metrics[i]
   subsampling <- cases$subsampling[i]
   
@@ -232,10 +233,10 @@ allinone <- function(i, datasets, testdata, cases, IR, method, index=0){
   if (best_metric=="Accuracy") outputFun = defaultSummary
   if (best_metric=="ROC") outputFun = twoClassSummary
   
-  if (cases$subsampling[i]=="NULL") set.seed((11111+cases$ID[i]))
-  if (cases$subsampling[i]=="down") set.seed((22222+cases$ID[i]))
-  if (cases$subsampling[i]=="up") set.seed((33333+cases$ID[i]))
-  if (cases$subsampling[i]=="smote") set.seed((44444+cases$ID[i]))
+  if (cases$subsampling[i]=="NULL") set.seed((11111+cases$ID[i])+cases$iteration[i])
+  if (cases$subsampling[i]=="down") set.seed((22222+cases$ID[i])+cases$iteration[i])
+  if (cases$subsampling[i]=="up") set.seed((33333+cases$ID[i])+cases$iteration[i])
+  if (cases$subsampling[i]=="smote") set.seed((44444+cases$ID[i])+cases$iteration[i])
   
   seeds <- vector(mode = "list", length = 5)
   for(j in 1:5) seeds[[j]] <- sample.int(nrow(trainData), 100)
@@ -259,22 +260,34 @@ allinone <- function(i, datasets, testdata, cases, IR, method, index=0){
   # Model Training ----------------------------------------------------------
   
   if (method == "glm"){
-    model = train(recSteps, data = trainData, metric=best_metric, 
-                  method="glm", family= "binomial", maxit = 100,
-                  trControl=fitControl
-    )
+    model = try(train(recSteps, data = trainData, metric=best_metric, 
+                      method="glm", family= "binomial", maxit = 100,
+                      trControl=fitControl
+    ), silent=TRUE)
   }
   
   if (method == "rpart"){
-    model = train(recSteps, data = trainData, metric=best_metric, 
-                  method="rpart", tuneLength = 30,
-                  trControl=fitControl
-    )
+    model = try(train(recSteps, data = trainData, metric=best_metric, 
+                      method="rpart", tuneLength = 30,
+                      trControl=fitControl
+    ), silent=TRUE)
   }
-
-  pred <- predict(model, testdata)
-  diseased <- predict(model, testdata, type = "response")$diseased
-  obs <- testdata$State
+  
+  if (inherits(model, "try-error")){
+    final_result <- data.frame(cases[i,3:4], IR = IR[cases$ID[i]], 
+                               Accuracy = NA,
+                               Sensitivity = NA,
+                               Specificity = NA,  
+                               AUROC = NA, 
+                               Precision = NA, 
+                               F1 = NA,
+                               AUPRC = NA)
+    return(final_result)
+  } 
+  
+  pred <- predict(model, testdata0)
+  diseased <- predict(model, testdata0, type = "response")$diseased
+  obs <- testdata0$State
   result <- data.frame(obs, pred, diseased)
   
   if (index==1) return(result)
@@ -284,7 +297,7 @@ allinone <- function(i, datasets, testdata, cases, IR, method, index=0){
   out3 <- prSummary(result, lev=levels(trainData$State))
   
   
-  final_result <- data.frame(cases[i,1:2], IR = IR[cases$ID[i]], 
+  final_result <- data.frame(cases[i,3:4], IR = IR[cases$ID[i]], 
                              Accuracy = unname(out1["Accuracy"]),
                              Sensitivity = unname(out2["Sens"]),
                              Specificity = unname(out2["Spec"]),  
@@ -294,6 +307,7 @@ allinone <- function(i, datasets, testdata, cases, IR, method, index=0){
                              AUPRC = unname(out3["AUC"]))
   return(final_result)
 }
+
 
 
 # The modeling() function requires at least three arguments:
